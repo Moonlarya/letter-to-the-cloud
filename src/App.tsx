@@ -1,0 +1,47 @@
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+//@ts-ignore
+import CLOUDS from 'vanta/dist/vanta.clouds.min' // TODO: declate types
+
+import Book from './Book'
+
+import './App.css'
+import { useState, useRef, useEffect } from 'react'
+
+function App() {
+  const [vantaEffect, setVantaEffect] = useState(null)
+  const myRef = useRef(null)
+
+  useEffect(() => {
+    if (!vantaEffect) {
+      setVantaEffect(
+        CLOUDS({
+          el: myRef.current,
+          mouseControls: true,
+          touchControls: true,
+          gyroControls: false,
+          minHeight: 200.0,
+          minWidth: 200.0,
+          skyColor: 0x3b3575,
+          sunGlareColor: 0xff3030,
+          sunlightColor: 0xff32cf,
+          speed: 0.8,
+        })
+      )
+    }
+    return () => {
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment 
+      //@ts-ignore
+      if (vantaEffect) vantaEffect.destroy() // TODO: fix types issue
+    }
+  }, [vantaEffect])
+
+  return (
+    <>
+      <div ref={myRef} className='wrapper'>
+        <Book />
+      </div>
+    </>
+  )
+}
+
+export default App
