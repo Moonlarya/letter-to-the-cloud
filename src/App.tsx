@@ -18,7 +18,7 @@ function App() {
           el: myRef.current,
           mouseControls: true,
           touchControls: true,
-          gyroControls: false,
+          gyroControls: true,
           minHeight: 200.0,
           minWidth: 200.0,
           skyColor: 0x3b3575,
@@ -29,7 +29,7 @@ function App() {
       )
     }
     return () => {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment 
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
       //@ts-ignore
       if (vantaEffect) vantaEffect.destroy() // TODO: fix types issue
     }
