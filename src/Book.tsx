@@ -1,10 +1,16 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 import { useEffect, useRef, useState } from 'react'
+import { Commet } from 'react-loading-indicators'
 import HTMLFlipBook from 'react-pageflip'
+import useIsMobile from './hooks/useIsMobile'
 
 const TOTAL_PAGES = 36
 
 const Book = () => {
+  const isMobile = useIsMobile()
+  const flipbookHeight = isMobile ? 300 : 600
+  const flipbookWidth = isMobile ? 300 : 600
+
   const flipBook = useRef(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
@@ -99,7 +105,7 @@ const Book = () => {
   const prevButtonClick = () => flipBook.current?.flipPrev()
 
   if (!isLoaded) {
-    return <div>Загрузка книги...</div>
+    return <Commet color='#ffd600' size='large' />
   }
 
   return (
@@ -117,13 +123,13 @@ const Book = () => {
         </button>
         {/* @ts-ignore */}
         <HTMLFlipBook
-          width={600}
-          height={600}
+          width={flipbookWidth}
+          height={flipbookHeight}
           maxShadowOpacity={0.5}
           size='fixed'
           drawShadow
           showCover
-          mobileScrollSupport
+          mobileScrollSupport={false}
           onFlip={onPage}
           ref={(el) => {
             flipBook.current = el?.pageFlip()
@@ -132,6 +138,7 @@ const Book = () => {
           <div className='page page-cover' data-density='hard'>
             <img
               src={`${import.meta.env.BASE_URL}assets/images/Frame 40.png`}
+              style={{ width: flipbookWidth, height: flipbookHeight }}
             />
           </div>
 
@@ -140,7 +147,10 @@ const Book = () => {
             ([_, { images }], i) =>
               images.map((img, idx) => (
                 <div key={`${i}-${idx}`} className='page'>
-                  <img src={img.src} />
+                  <img
+                    src={img.src}
+                    style={{ width: flipbookWidth, height: flipbookHeight }}
+                  />
                   <div className={`overlay ${idx === 0 ? 'left' : 'right'}`} />
                 </div>
               ))

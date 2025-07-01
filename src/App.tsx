@@ -6,6 +6,7 @@ import Book from './Book'
 
 import './App.css'
 import { useState, useRef, useEffect } from 'react'
+import RotateDeviceOverlay from './RotateDevice'
 
 function App() {
   const myRef = useRef(null)
@@ -38,6 +39,7 @@ function App() {
   return (
     <>
       <div ref={myRef} className='wrapper'>
+        <RotateDeviceOverlay />
         <Book />
       </div>
     </>

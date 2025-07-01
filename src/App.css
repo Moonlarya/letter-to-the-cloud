@@ -33,11 +33,6 @@ html {
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
-.page img {
-  width: 600px;
-  height: 600px;
-}
-
 .overlay {
   position: absolute;
   top: 0;
@@ -98,6 +93,11 @@ p {
   font-size: 24px;
   color: #fff8e8;
   animation: flicker 2s infinite alternate ease-in-out;
+  mix-blend-mode: screen;
+}
+.button-circle:hover {
+  transform: scale(2);
+  transition: transform 0.4s ease;
 }
 .button-circle:focus {
   outline: none;
@@ -113,6 +113,7 @@ p {
   pointer-events: none;
   transform: scale(0.8);
 }
+
 @keyframes flicker {
   0% {
     filter: brightness(1) drop-shadow(0 0 6px #ffeb3baa);
@@ -126,4 +127,25 @@ p {
     filter: brightness(1) drop-shadow(0 0 6px #ffeb3baa);
     transform: scale(1);
   }
+}
+
+.overlay {
+  position: 'fixed';
+  top: 0;
+  left: 0;
+  width: '100vw';
+  height: '100vh';
+  background-color: 'rgba(0, 0, 0, 0.9)';
+  color: '#fff';
+  z-index: 9999;
+  display: 'flex';
+  align-items: 'center';
+  justify-content: 'center';
+  text-align: 'center';
+  padding: '2rem';
+}
+
+.message {
+  font-size: '1.5rem';
+  line-height: 1.6;
 }
