@@ -7,10 +7,15 @@ import Book from './Book'
 import './App.css'
 import { useState, useRef, useEffect } from 'react'
 import RotateDeviceOverlay from './RotateDevice'
+import useWindowSize from './hooks/useWindowSize'
+import useIsLandscape from './hooks/useIsLandscape'
 
 function App() {
   const myRef = useRef(null)
   const [vantaEffect, setVantaEffect] = useState(null)
+
+  const isLandscape = useIsLandscape()
+  const { isMobile } = useWindowSize()
 
   useEffect(() => {
     if (!vantaEffect) {
@@ -38,9 +43,9 @@ function App() {
 
   return (
     <>
+      {!isLandscape && <RotateDeviceOverlay />}
       <div ref={myRef} className='wrapper'>
-        <RotateDeviceOverlay />
-        <Book />
+        {isLandscape && <Book isMobile={isMobile} />}
       </div>
     </>
   )

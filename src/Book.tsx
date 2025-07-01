@@ -2,12 +2,10 @@
 import { useEffect, useRef, useState } from 'react'
 import { Commet } from 'react-loading-indicators'
 import HTMLFlipBook from 'react-pageflip'
-import useIsMobile from './hooks/useIsMobile'
 
 const TOTAL_PAGES = 36
 
-const Book = () => {
-  const isMobile = useIsMobile()
+const Book = ({ isMobile }: { isMobile: boolean }) => {
   const flipbookHeight = isMobile ? 300 : 600
   const flipbookWidth = isMobile ? 300 : 600
 
@@ -167,9 +165,12 @@ const Book = () => {
           {'→'}
         </button>
       </div>
-      <p>
-        <span>{page}</span> of <span>{TOTAL_PAGES}</span>
-      </p>
+      {page && (
+        <p>
+          <span className='current-page-number'>{page}</span> /{' '}
+          <span>{TOTAL_PAGES}</span>
+        </p>
+      )}
     </>
   )
 }
