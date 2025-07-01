@@ -9,7 +9,6 @@ const Book = () => {
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const [page, setPage] = useState(0)
-  const [totalPage, setTotalPage] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
   const [hasInteracted, setHasInteracted] = useState(false)
 
@@ -105,46 +104,62 @@ const Book = () => {
 
   return (
     <>
-      {/* @ts-ignore */}
-      <HTMLFlipBook
-        width={600}
-        height={600}
-        maxShadowOpacity={0.5}
-        size='fixed'
-        drawShadow
-        showCover
-        mobileScrollSupport
-        onFlip={onPage}
-        ref={(el) => {
-          flipBook.current = el?.pageFlip()
-          if (flipBook.current) {
-            //@ts-ignore
-            setTotalPage(flipBook.current.getPageCount())
-          }
-        }}
-      >
-        <div className='page page-cover' data-density='hard'>
-          <img src={`${import.meta.env.BASE_URL}assets/images/Frame 40.png`} />
-        </div>
+      <div className='wrapper'>
+        <button
+          type='button'
+          onClick={prevButtonClick}
+          className={`button-circle ${!page ? 'disabled' : ''}`}
+          tabIndex={-1}
+          aria-label='Previous page'
+          onMouseDown={(e) => e.preventDefault()}
+        >
+          {'←'}
+        </button>
+        {/* @ts-ignore */}
+        <HTMLFlipBook
+          width={600}
+          height={600}
+          maxShadowOpacity={0.5}
+          size='fixed'
+          drawShadow
+          showCover
+          mobileScrollSupport
+          onFlip={onPage}
+          ref={(el) => {
+            flipBook.current = el?.pageFlip()
+          }}
+        >
+          <div className='page page-cover' data-density='hard'>
+            <img
+              src={`${import.meta.env.BASE_URL}assets/images/Frame 40.png`}
+            />
+          </div>
 
-        {Array.from(assetCacheRef.current.entries()).flatMap(
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          ([_, { images }], i) =>
-            images.map((img, idx) => (
-              <div key={`${i}-${idx}`} className='page'>
-                <img src={img.src} />
-                <div className={`overlay ${idx === 0 ? 'left' : 'right'}`} />
-              </div>
-            ))
-        )}
-      </HTMLFlipBook>
-      <button type='button' onClick={prevButtonClick}>
-        {'<-'}
-      </button>
-      [<span>{page}</span> of <span>{totalPage}</span>]
-      <button type='button' onClick={nextButtonClick}>
-        {'->'}
-      </button>
+          {Array.from(assetCacheRef.current.entries()).flatMap(
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            ([_, { images }], i) =>
+              images.map((img, idx) => (
+                <div key={`${i}-${idx}`} className='page'>
+                  <img src={img.src} />
+                  <div className={`overlay ${idx === 0 ? 'left' : 'right'}`} />
+                </div>
+              ))
+          )}
+        </HTMLFlipBook>
+        <button
+          type='button'
+          onClick={nextButtonClick}
+          className={`button-circle ${page === TOTAL_PAGES ? 'disabled' : ''}`}
+          tabIndex={-1}
+          onMouseDown={(e) => e.preventDefault()}
+          aria-label='Next page'
+        >
+          {'→'}
+        </button>
+      </div>
+      <p>
+        <span>{page}</span> of <span>{TOTAL_PAGES}</span>
+      </p>
     </>
   )
 }
