@@ -18,12 +18,19 @@ html {
   width: 100%;
 }
 
-.wrapper {
+.wrapper,
+.book-wrapper {
   height: 100dvh;
   width: 100dvw;
   display: flex;
   justify-content: center;
   align-items: center;
+  position: relative;
+}
+
+.book-wrapper {
+  position: fixed;
+  z-index: 2;
 }
 
 .page {

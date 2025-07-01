@@ -22,7 +22,7 @@ const useWindowSize = () => {
 
   return {
     width: windowSize,
-    isMobile: windowSize.width <= 768 || windowSize.height <= 768,
+    isMobile: windowSize.width <= 768 || windowSize.height <= 730, // TODO: add adequate condition
   }
 }
 

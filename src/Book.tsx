@@ -108,7 +108,7 @@ const Book = ({ isMobile }: { isMobile: boolean }) => {
 
   return (
     <>
-      <div className='wrapper'>
+      <div className='book-wrapper'>
         <button
           type='button'
           onClick={prevButtonClick}

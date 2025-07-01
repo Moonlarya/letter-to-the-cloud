@@ -9,6 +9,7 @@ import { useState, useRef, useEffect } from 'react'
 import RotateDeviceOverlay from './RotateDevice'
 import useWindowSize from './hooks/useWindowSize'
 import useIsLandscape from './hooks/useIsLandscape'
+import TwinkleOverlay from './TwinkleOverlay'
 
 function App() {
   const myRef = useRef(null)
@@ -44,6 +45,7 @@ function App() {
   return (
     <>
       {!isLandscape && <RotateDeviceOverlay />}
+      <TwinkleOverlay />
       <div ref={myRef} className='wrapper'>
         {isLandscape && <Book isMobile={isMobile} />}
       </div>
