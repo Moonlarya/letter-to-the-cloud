@@ -2,26 +2,69 @@
 import { useEffect, useRef, useState } from 'react'
 import HTMLFlipBook from 'react-pageflip'
 
+const TOTAL_PAGES = 36
+
 const Book = () => {
   const flipBook = useRef(null)
   const audioRef = useRef<HTMLAudioElement | null>(null)
 
   const [page, setPage] = useState(0)
   const [totalPage, setTotalPage] = useState(0)
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [hasInteracted, setHasInteracted] = useState(false)
 
-  const nextButtonClick = () => {
-    //@ts-ignore
-    flipBook.current?.flipNext()
-  }
+  const assetCacheRef = useRef<
+    Map<number, { images: HTMLImageElement[]; audio: HTMLAudioElement }>
+  >(new Map())
 
-  const prevButtonClick = () => {
-    //@ts-ignore
-    flipBook.current?.flipPrev()
-  }
+  useEffect(() => {
+    const loadAllAssets = async () => {
+      for (let page = 0; page < TOTAL_PAGES / 2; page++) {
+        const imageStartIndex = page * 2 + 41
+        const imagePaths = [imageStartIndex, imageStartIndex + 1].map(
+          (i) => `${import.meta.env.BASE_URL}assets/images/Frame ${i}.png`
+        )
+
+        const imagePromises = imagePaths.map((src) => {
+          const img = new Image()
+          img.src = src
+          return new Promise<HTMLImageElement>((resolve) => {
+            img.onload = () => resolve(img)
+            img.onerror = () => resolve(img)
+          })
+        })
+
+        const audioPath = `${
+          import.meta.env.BASE_URL
+        }audio/${imageStartIndex}.mp3`
+
+        //@ts-ignore
+        const audioElement = new Audio(audioPath)
+        const audioPromise = new Promise<HTMLAudioElement>((resolve) => {
+          audioElement.oncanplaythrough = () => resolve(audioElement)
+          audioElement.onerror = () => resolve(audioElement)
+        })
+
+        const [img1, img2, loadedAudio] = await Promise.all([
+          ...imagePromises,
+          audioPromise,
+        ])
+
+        assetCacheRef.current.set(page, {
+          //@ts-ignore
+          images: [img1, img2],
+          //@ts-ignore
+          audio: loadedAudio,
+        })
+      }
+
+      setIsLoaded(true)
+    }
+
+    loadAllAssets()
+  }, [])
 
   const onPage = (e: { data: number }) => setPage(e.data)
-
-  const [hasInteracted, setHasInteracted] = useState(false)
 
   useEffect(() => {
     const handleFirstInteraction = () => setHasInteracted(true)
@@ -30,35 +73,39 @@ const Book = () => {
   }, [])
 
   useEffect(() => {
-    if (flipBook.current) {
-      //@ts-ignore
-      setTotalPage(flipBook.current.getPageCount())
-    }
-  }, [])
-
-  useEffect(() => {
     if (!hasInteracted) return
+
+    const cached = assetCacheRef.current.get(page)
+    if (!cached) return
 
     if (audioRef.current) {
       audioRef.current.pause()
       audioRef.current.currentTime = 0
     }
-    const audio = new Audio(`${import.meta.env.BASE_URL}/audio/${page + 2}.mp3`)
-    audioRef.current = audio
 
-    audio.play().catch((err) => {
-      console.warn(`Не удалось воспроизвести ${page + 2}.mp3`, err)
+    audioRef.current = cached.audio
+    cached.audio.play().catch((err) => {
+      console.warn(`Не удалось воспроизвести аудио для страницы ${page}`, err)
     })
 
     return () => {
-      audio.pause()
-      audio.currentTime = 0
+      cached.audio.pause()
+      cached.audio.currentTime = 0
     }
-  }, [page])
+  }, [page, hasInteracted])
+
+  //@ts-ignore
+  const nextButtonClick = () => flipBook.current?.flipNext()
+  //@ts-ignore
+  const prevButtonClick = () => flipBook.current?.flipPrev()
+
+  if (!isLoaded) {
+    return <div>Загрузка книги...</div>
+  }
 
   return (
     <>
-      {/*@ts-ignore*/}
+      {/* @ts-ignore */}
       <HTMLFlipBook
         width={600}
         height={600}
@@ -69,26 +116,27 @@ const Book = () => {
         mobileScrollSupport
         onFlip={onPage}
         ref={(el) => {
-          // @ts-ignore: el can be HTML element wrapper or PageFlip object
           flipBook.current = el?.pageFlip()
+          if (flipBook.current) {
+            //@ts-ignore
+            setTotalPage(flipBook.current.getPageCount())
+          }
         }}
       >
         <div className='page page-cover' data-density='hard'>
-          <img
-            src={`${import.meta.env.BASE_URL}assets/Frame 3.svg`}
-            style={{ width: '600px', height: '600px' }}
-          />
+          <img src={`${import.meta.env.BASE_URL}assets/images/Frame 40.png`} />
         </div>
 
-        {Array.from({ length: 36 }).map((_, index) => (
-          <div key={index} style={{ width: '100%', height: '100%' }}>
-            <img
-              src={`${import.meta.env.BASE_URL}assets/Frame ${index + 4}.svg`}
-              style={{ width: '600px', height: '600px' }}
-            />
-            <div className={`overlay ${index % 2 === 0 ? 'left' : 'right'}`} />
-          </div>
-        ))}
+        {Array.from(assetCacheRef.current.entries()).flatMap(
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
+          ([_, { images }], i) =>
+            images.map((img, idx) => (
+              <div key={`${i}-${idx}`} className='page'>
+                <img src={img.src} />
+                <div className={`overlay ${idx === 0 ? 'left' : 'right'}`} />
+              </div>
+            ))
+        )}
       </HTMLFlipBook>
       <button type='button' onClick={prevButtonClick}>
         {'<-'}

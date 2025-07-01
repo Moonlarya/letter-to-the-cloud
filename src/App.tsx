@@ -8,8 +8,8 @@ import './App.css'
 import { useState, useRef, useEffect } from 'react'
 
 function App() {
-  const [vantaEffect, setVantaEffect] = useState(null)
   const myRef = useRef(null)
+  const [vantaEffect, setVantaEffect] = useState(null)
 
   useEffect(() => {
     if (!vantaEffect) {
