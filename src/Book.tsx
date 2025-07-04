@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Commet } from 'react-loading-indicators'
 import HTMLFlipBook from 'react-pageflip'
 
-const TOTAL_PAGES = 36
+const TOTAL_PAGES = 41
 
 const Book = ({ isMobile }: { isMobile: boolean }) => {
   const flipbookHeight = isMobile ? 300 : 600
