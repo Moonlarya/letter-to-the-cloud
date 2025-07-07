@@ -1,0 +1,60 @@
+button {
+  z-index: 1;
+  user-select: none;
+  outline: none;
+}
+
+.button-circle {
+  width: 70px;
+  height: 70px;
+  margin: 30px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #ffd83b 0%, transparent 40%);
+  border: none;
+  cursor: pointer;
+  user-select: none;
+  outline: none;
+  position: relative;
+  transition: opacity 0.4s ease, transform 0.4s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 24px;
+  color: #fff8e8;
+  animation: flicker 2s infinite alternate ease-in-out;
+  mix-blend-mode: screen;
+}
+.button-circle:hover {
+  transform: scale(2);
+  transition: transform 0.4s ease;
+}
+.button-circle:focus {
+  outline: none;
+}
+.button-circle:active {
+  outline: none;
+}
+.button-circle.no-select {
+  user-select: none;
+}
+.button-circle.disabled {
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.8);
+}
+
+@keyframes flicker {
+  0% {
+    filter: brightness(1) drop-shadow(0 0 6px #ffeb3baa);
+    transform: scale(1);
+  }
+  50% {
+    filter: brightness(1.3) drop-shadow(0 0 12px rgb(255, 203, 59));
+    transform: scale(1.05);
+  }
+  100% {
+    filter: brightness(1) drop-shadow(0 0 6px #ffeb3baa);
+    transform: scale(1);
+  }
+}

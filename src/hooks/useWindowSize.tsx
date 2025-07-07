@@ -20,9 +20,15 @@ const useWindowSize = () => {
     return () => window.removeEventListener('resize', handleResize)
   }, [])
 
+  const isMobile = windowSize.width <= 768 || windowSize.height <= 730 // TODO: add adequate condition
+  const height = isMobile ? 300 : 600
+  const width = isMobile ? 300 : 600
+
   return {
-    width: windowSize,
-    isMobile: windowSize.width <= 768 || windowSize.height <= 730, // TODO: add adequate condition
+    height,
+    width,
+    windowSize,
+    isMobile,
   }
 }
 

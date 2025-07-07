@@ -24,7 +24,7 @@ const TwinkleOverlay = () => {
 const styles: Record<string, React.CSSProperties> = {
   overlay: {
     position: 'fixed',
-    height: '70%',
+    height: '100%',
     top: 0,
     left: 0,
     right: 0,
