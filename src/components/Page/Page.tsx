@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
-import { forwardRef } from 'react'
+import { forwardRef, useEffect, useState } from 'react'
 
 import './styles.css'
 
@@ -16,11 +16,18 @@ type Props = {
 const Page = forwardRef((props, ref) => {
   //@ts-ignore
   const { key, src, width, height, isEven } = props
+  const [loadedSrc, setLoadedSrc] = useState<string | null>(null)
+
+  useEffect(() => {
+    const img = new Image()
+    img.src = src
+    img.onload = () => setLoadedSrc(src)
+  }, [src])
 
   return (
     //@ts-ignore
     <div key={key} className='page' ref={ref}>
-      <img src={src} style={{ width, height }} />
+      {loadedSrc && <img src={loadedSrc} style={{ width, height }} />}
       <div className={`overlay ${isEven ? 'left' : 'right'}`} />
     </div>
   )
