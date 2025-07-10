@@ -13,11 +13,9 @@ type Props = {
 
 const Book = ({ width, height, isMobile }: Props) => {
   const flipBook = useRef(null)
-  const audioRef = useRef<HTMLAudioElement>(null)
 
   const [page, setPage] = useState(0)
   const [isLoaded, setIsLoaded] = useState(false)
-  const [hasInteracted, setHasInteracted] = useState(false)
   const [isEditingPage, setIsEditingPage] = useState(false)
   const [inputPage, setInputPage] = useState(Math.floor(page / 2) + 1)
 
@@ -31,28 +29,6 @@ const Book = ({ width, height, isMobile }: Props) => {
   const assetCacheRef = useRef<Map<number, { images: HTMLImageElement[] }>>(
     new Map()
   )
-
-  useEffect(() => {
-    const handleFirstInteraction = () => {
-      if (!hasInteracted && audioRef.current) {
-        setHasInteracted(true)
-        audioRef.current.play().catch((err) => {
-          console.error('Autoplay failed:', err)
-        })
-      }
-
-      window.removeEventListener('click', handleFirstInteraction)
-      window.removeEventListener('keydown', handleFirstInteraction)
-    }
-
-    window.addEventListener('click', handleFirstInteraction)
-    window.addEventListener('keydown', handleFirstInteraction)
-
-    return () => {
-      window.removeEventListener('click', handleFirstInteraction)
-      window.removeEventListener('keydown', handleFirstInteraction)
-    }
-  }, [hasInteracted])
 
   useEffect(() => {
     const loadAssets = async () => {
@@ -112,13 +88,6 @@ const Book = ({ width, height, isMobile }: Props) => {
   return (
     <>
       <div className='book-wrapper'>
-        <audio autoPlay loop ref={audioRef} preload='auto'>
-          <source
-            src={`${import.meta.env.BASE_URL}assets/audio/1.mp3`}
-            type='audio/mpeg'
-          />
-        </audio>
-
         <StarButton
           ariaLabel='Previous page'
           isDisabled={!page}
