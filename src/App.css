@@ -7,11 +7,13 @@
   font-family: 'Bricolage Grotesque', sans-serif;
 }
 
-body,
-html {
-  height: 100dvh;
-  width: 100dvw;
-  overflow: hidden;
+@media (min-width: 1024px) {
+  body,
+  html {
+    height: 100dvh;
+    width: 100dvw;
+    overflow: hidden;
+  }
 }
 
 #root {
@@ -225,4 +227,12 @@ input[type='number'] {
 .disabled {
   opacity: 0;
   pointer-events: none;
+}
+
+.mobile-book {
+  display: grid;
+}
+
+.mobile-book img {
+  margin-top: -1px;
 }
