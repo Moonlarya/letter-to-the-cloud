@@ -4,12 +4,16 @@ import { Commet } from 'react-loading-indicators'
 import HTMLFlipBook from 'react-pageflip'
 import Page, { PageCover } from './components/Page/Page'
 import StarButton from './components/StarButton/StarButton'
+import TelegramIcon from '@mui/icons-material/Telegram'
+import InstagramIcon from '@mui/icons-material/Instagram'
 
 type Props = {
   width: number
   height: number
   isMobile: boolean
 }
+
+const TOTAL_PAGES = 42
 
 const Book = ({ width, height, isMobile }: Props) => {
   const flipBook = useRef(null)
@@ -18,8 +22,6 @@ const Book = ({ width, height, isMobile }: Props) => {
   const [isLoaded, setIsLoaded] = useState(false)
   const [isEditingPage, setIsEditingPage] = useState(false)
   const [inputPage, setInputPage] = useState(Math.floor(page / 2) + 1)
-
-  const TOTAL_PAGES = 42
 
   const getImagePath = (index: number) =>
     `${import.meta.env.BASE_URL}assets/images/Frame ${index + 41}.png`
@@ -33,7 +35,7 @@ const Book = ({ width, height, isMobile }: Props) => {
   useEffect(() => {
     const loadAssets = async () => {
       for (let page = 0; page < pages.length / 2; page++) {
-        const imageStartIndex = page * 2 + 41
+        const imageStartIndex = page * 2 + TOTAL_PAGES - 1
         const imagePaths = [imageStartIndex, imageStartIndex + 1].map(
           (i) => `${import.meta.env.BASE_URL}assets/images/Frame ${i}.png`
         )
@@ -60,26 +62,16 @@ const Book = ({ width, height, isMobile }: Props) => {
     loadAssets()
   }, [])
 
-  const handlePageChange = async (newPage: number) => {
-    const clamped = Math.max(1, Math.min(newPage, Math.floor(pages.length / 2)))
-    const actualPage = (clamped - 1) * 2
-    const diff = actualPage - page
-
-    const direction = diff > 0 ? 1 : -1
-    const steps = Math.abs(diff)
-
-    for (let i = 0; i <= steps; i++) {
-      //@ts-ignore
-      flipBook.current?.flip(page + i * direction)
-    }
-  }
+  const handlePageChange = async (newPage: number) =>
+    //@ts-ignore
+    flipBook.current?.turnToPage(newPage * 2)
 
   const onPage = (e: { data: number }) => setPage(e.data)
 
   //@ts-ignore
-  const nextButtonClick = () => flipBook.current?.flipNext()
+  const nextButtonClick = () => flipBook.current.flipNext()
   //@ts-ignore
-  const prevButtonClick = () => flipBook.current?.flipPrev()
+  const prevButtonClick = () => flipBook.current.flipPrev()
 
   if (!isLoaded) {
     return <Commet color='#ffd600' size='large' />
@@ -139,21 +131,56 @@ const Book = ({ width, height, isMobile }: Props) => {
         </StarButton>
       </div>
       {!isMobile && (
-        <>
+        <div
+          className={`authors-wrapper ${
+            page >= pages.length ? '' : 'disabled'
+          }`}
+        >
           <img
-            className={`authors ${page >= pages.length ? '' : 'disabled'}`}
+            className='authors'
             src={`${
               import.meta.env.BASE_URL
             }assets/images/2025-07-07 18.27.30.jpg`}
           />
-          {/* eslint-disable-next-line @typescript-eslint/no-unused-vars */}
-          {Array.from({ length: 5 }).map((_el) => (
-            <div className='star'></div>
-          ))}
-        </>
+          <div className='social'>
+            <p>Serge Belkin:</p>
+            <a
+              href='https://t.me/sergebelkin'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <TelegramIcon
+                fontSize='large'
+                sx={{ color: 'rgb(248, 213, 74)', marginRight: '10px' }}
+              />
+            </a>
+            <a
+              href='https://instagram.com/serge_belkin'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <InstagramIcon
+                fontSize='large'
+                sx={{ color: 'rgb(248, 213, 74)' }}
+              />
+            </a>
+            <p />
+            <p>Hmarka:</p>
+            <a
+              href='https://instagram.com/moonlaria'
+              target='_blank'
+              rel='noopener noreferrer'
+            >
+              <InstagramIcon
+                fontSize='large'
+                sx={{ color: 'rgb(248, 213, 74)' }}
+              />
+            </a>
+          </div>
+        </div>
       )}
       {page && page <= pages.length && (
-        <p>
+        <p className='page-number'>
           {isEditingPage ? (
             <input
               type='number'
