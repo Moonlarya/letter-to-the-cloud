@@ -11,6 +11,7 @@ import TelegramIcon from '@mui/icons-material/Telegram'
 import InstagramIcon from '@mui/icons-material/Instagram'
 
 import './App.css'
+import SoundToggle from './components/SoundToggle'
 
 function App() {
   const [hasInteracted, setHasInteracted] = useState(false)
@@ -48,6 +49,9 @@ function App() {
 
   return (
     <>
+      {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+      {/* @ts-ignore */}
+      <SoundToggle audioRef={audioRef} />
       <audio autoPlay loop ref={audioRef} preload='auto'>
         <source
           src={`${import.meta.env.BASE_URL}assets/audio/1.mp3`}
